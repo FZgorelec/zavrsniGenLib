@@ -9,19 +9,31 @@ abstract class GeneticAlgorithm<T extends IGenotype> {
     protected IGenotypeFactory<T> genotypeFactory;
     protected IFitnessFunction<T> fitnessFunction;
     protected T[] population;
+    protected int numberOfThreads;
 
     public GeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
-                            IGeneticAlgorithmParameters parameters) {
+                            IGeneticAlgorithmParameters parameters,int numberOfThreads) {
         this.genotypeFactory = genotypeFactory;
         this.parameters = parameters;
         this.fitnessFunction = fitnessFunction;
+        this.numberOfThreads=numberOfThreads;
+        if (numberOfThreads==0)this.numberOfThreads=Runtime.getRuntime().availableProcessors();
     }
 
-   abstract T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm,
-                   IMutationAlgorithm<T> mutationAlgorithm);
+    public GeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
+                            IGeneticAlgorithmParameters parameters){
+        this(genotypeFactory,fitnessFunction,parameters,1);
+    }
+
+    abstract T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm,
+                            IMutationAlgorithm<T> mutationAlgorithm);
 
     protected T[] initPopulation() {
-        return genotypeFactory.getPopulationOfGenotypes(parameters.getPopulationSize());
+        T[] population = genotypeFactory.getPopulationOfGenotypes(parameters.getPopulationSize());
+        for (T member :population) {
+            member.setFitness(fitnessFunction.calculateFitness(member));
+        }
+        return population;
     }
 
     public T[] getPopulation() {

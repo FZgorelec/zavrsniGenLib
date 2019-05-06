@@ -1,5 +1,5 @@
 package algorithm;
 
 public interface IFitnessFunction<T> {
-    double getFitness(T genome);
+    double calculateFitness(T genome);
 }

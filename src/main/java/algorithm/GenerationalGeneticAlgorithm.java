@@ -1,61 +1,118 @@
 package algorithm;
 
+import crossing.IChildrenSelectionAlgorithm;
 import crossing.ICrossingAlgorithm;
 import mutation.IMutationAlgorithm;
 import selection.ISelectionAlgorithm;
-
+import util.IRandomNumberGeneratorProvider;
+import util.RNGThreadProvider;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
 public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAlgorithm<T> {
+
+    private ThreadFactory threadFactory;
 
     public GenerationalGeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
                                         IGeneticAlgorithmParameters parameters) {
         super(genotypeFactory, fitnessFunction, parameters);
+        threadFactory = new RNGThreadProvider();
+    }
+
+    public GenerationalGeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
+                                        IGeneticAlgorithmParameters parameters,int numberOfThreads) {
+        super(genotypeFactory, fitnessFunction, parameters,numberOfThreads);
+        threadFactory = new RNGThreadProvider();
     }
 
     @Override
     public T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm,
-                   IMutationAlgorithm<T> mutationAlgorithm) {
+                          IMutationAlgorithm<T> mutationAlgorithm) {
+        return runAlgorithm(selectionAlgorithm, crossingAlgorithm, mutationAlgorithm, null);
+    }
+
+
+    public T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm,
+                          IMutationAlgorithm<T> mutationAlgorithm, IChildrenSelectionAlgorithm<T> childrenSelectionAlgorithm) {
         int populationSize = parameters.getPopulationSize();
         boolean foundSatisfactory = false;
         T bestSolution = null;
         double satisfactoryFitness = parameters.getSatisfactoryFitness();
         T[] population = initPopulation();
-
-
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads, threadFactory);
+        //((IRandomNumberGeneratorProvider)Thread.currentThread()).getRNG();
+        int numberOfIterationsPerGeneration = calcNumberOfIterationsPerGeneration(populationSize, crossingAlgorithm.numberOfGeneratedChildren());
         for (int i = 0, numberOfGenerations = parameters.numberOfGenerations(); i < numberOfGenerations; i++) {
-            System.out.println(i);
+
             for (T genotype : population) {
-                genotype.setFitness(fitnessFunction.getFitness(genotype));
                 if (genotype.getFitness() >= satisfactoryFitness) {
                     foundSatisfactory = true;
                     bestSolution = genotype;
                 }
             }
-            if (foundSatisfactory) return bestSolution;
+            if (foundSatisfactory) {
+                executorService.shutdown();
+                return bestSolution;
+            }
             List<T> newPopulation = new ArrayList<>();
-            while (newPopulation.size() < populationSize) {
-                T parent1 = selectionAlgorithm.select(population);
-                T parent2 = selectionAlgorithm.select(population);
-                T[] children = crossingAlgorithm.cross(parent1, parent2);
-                for (T child : children) {
-                    newPopulation.add(mutationAlgorithm.mutate(child));
+            List<Callable<T[]>> jobList = new ArrayList<>();
+            for (int j = 0; j < numberOfIterationsPerGeneration; j++) {
+                jobList.add(() -> {
+                    T parent1 = selectionAlgorithm.select(population);
+                    T parent2 = selectionAlgorithm.select(population);
+                    T[] children = crossingAlgorithm.cross(parent1, parent2);
+                    for (int k = 0, len = children.length; k < len; k++) {
+                        children[k] = mutationAlgorithm.mutate(children[k]);
+                        children[k].setFitness(fitnessFunction.calculateFitness(children[k]));
+                    }
+                    return children;
+                });
+            }
+
+            try {
+                List<Future<T[]>> generatedChildren = executorService.invokeAll(jobList);
+                for (Future<T[]> futureChildArray : generatedChildren) {
+                    T[] childArray = futureChildArray.get();
+                    for (T child : childArray) {
+                        newPopulation.add(child);
+                    }
+                }
+            } catch (InterruptedException e) {
+                System.err.println("Executor service failed");
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            if (childrenSelectionAlgorithm != null) childrenSelectionAlgorithm.newPopulation(population, newPopulation);
+            else {
+                for (int j = 0; j < populationSize; j++) {
+                    population[j] = newPopulation.get(j);
                 }
             }
-            for (int j = 0; j < populationSize; j++) {
-                population[j] = newPopulation.get(j);
-            }
         }
-
-        double bestFitness=-Double.MAX_VALUE;
+        executorService.shutdown();
+        double bestFitness = -Double.MAX_VALUE;
         for (int i = 0; i < populationSize; i++) {
-            population[i].setFitness(fitnessFunction.getFitness(population[i]));
-            if(population[i].getFitness()>bestFitness){
-                bestSolution=population[i];
-                bestFitness=population[i].getFitness();
+            if (population[i].getFitness() > bestFitness) {
+                bestSolution = population[i];
+                bestFitness = population[i].getFitness();
             }
         }
         return bestSolution;
+    }
+
+    public void setThreadFactory(ThreadFactory threadFactory) {
+        if (threadFactory.newThread(() -> {
+        }) instanceof IRandomNumberGeneratorProvider) this.threadFactory = threadFactory;
+        else
+            throw new IllegalArgumentException("Provided thread factory must return threads that implement the IRandomNumberGeneratorProvider interface");
+    }
+
+    private int calcNumberOfIterationsPerGeneration(int popSize, int childrenCreated) {
+        if (childrenCreated == 1) return popSize;
+        if (popSize % childrenCreated == 0) return popSize / childrenCreated;
+        return popSize / childrenCreated + 1;
+
     }
 }
