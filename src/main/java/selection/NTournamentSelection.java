@@ -8,19 +8,17 @@ import java.util.List;
 public abstract class NTournamentSelection<T extends IGenotype> implements ISelectionAlgorithm<T> {
 
     protected int numberOfSelectedGenomes;
-    protected IRandomNumberGenerator random;
 
-    protected NTournamentSelection(int numberOfSelectedGenomes, IRandomNumberGenerator random) {
+    protected NTournamentSelection(int numberOfSelectedGenomes) {
         this.numberOfSelectedGenomes=numberOfSelectedGenomes;
-        this.random=random;
     }
 
-    protected abstract List<T> selectTournamentParticipants(T[] population);
+    protected abstract List<T> selectTournamentParticipants(T[] population,IRandomNumberGenerator random);
 
     @Override
-    public T select(T[] population) {
+    public T select(T[] population,IRandomNumberGenerator random) {
         T bestSolution=null;
-        List<T> solutionCandidates=selectTournamentParticipants(population);
+        List<T> solutionCandidates=selectTournamentParticipants(population,random);
         double maxFitness=-Double.MAX_VALUE;
 
         for (T candidate:solutionCandidates) {
