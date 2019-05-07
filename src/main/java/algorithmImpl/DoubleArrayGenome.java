@@ -11,8 +11,9 @@ public class DoubleArrayGenome implements IGenotype {
         this.solution = solution;
         this.fitness = fitness;
     }
+
     public DoubleArrayGenome(double[] solution) {
-        this(solution,0);
+        this(solution, 0);
     }
 
     @Override
@@ -22,7 +23,7 @@ public class DoubleArrayGenome implements IGenotype {
 
     @Override
     public void setFitness(double fitness) {
-        this.fitness=fitness;
+        this.fitness = fitness;
     }
 
     public double[] getSolution() {

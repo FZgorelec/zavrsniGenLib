@@ -12,17 +12,17 @@ abstract class GeneticAlgorithm<T extends IGenotype> {
     protected int numberOfThreads;
 
     public GeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
-                            IGeneticAlgorithmParameters parameters,int numberOfThreads) {
+                            IGeneticAlgorithmParameters parameters, int numberOfThreads) {
         this.genotypeFactory = genotypeFactory;
         this.parameters = parameters;
         this.fitnessFunction = fitnessFunction;
-        this.numberOfThreads=numberOfThreads;
-        if (numberOfThreads==0)this.numberOfThreads=Runtime.getRuntime().availableProcessors();
+        this.numberOfThreads = numberOfThreads;
+        if (numberOfThreads == 0) this.numberOfThreads = Runtime.getRuntime().availableProcessors();
     }
 
     public GeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
-                            IGeneticAlgorithmParameters parameters){
-        this(genotypeFactory,fitnessFunction,parameters,1);
+                            IGeneticAlgorithmParameters parameters) {
+        this(genotypeFactory, fitnessFunction, parameters, 1);
     }
 
     abstract T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm,
@@ -30,7 +30,7 @@ abstract class GeneticAlgorithm<T extends IGenotype> {
 
     protected T[] initPopulation() {
         T[] population = genotypeFactory.getPopulationOfGenotypes(parameters.getPopulationSize());
-        for (T member :population) {
+        for (T member : population) {
             member.setFitness(fitnessFunction.calculateFitness(member));
         }
         return population;

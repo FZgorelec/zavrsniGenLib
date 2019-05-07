@@ -5,9 +5,10 @@ import java.util.Random;
 public class RandomNumberGenerator implements IRandomNumberGenerator {
     Random rand;
 
-    public RandomNumberGenerator(){
-        rand=new Random();
+    public RandomNumberGenerator() {
+        rand = new Random();
     }
+
     @Override
     public double nextDouble() {
         return rand.nextDouble();
@@ -15,7 +16,7 @@ public class RandomNumberGenerator implements IRandomNumberGenerator {
 
     @Override
     public double nextDouble(double min, double max) {
-        return min+(max-min)*nextDouble();
+        return min + (max - min) * nextDouble();
     }
 
 
@@ -25,7 +26,7 @@ public class RandomNumberGenerator implements IRandomNumberGenerator {
 
 
     public float nextFloat(float min, float max) {
-        return min+(max-min)*nextFloat();
+        return min + (max - min) * nextFloat();
     }
 
     @Override
@@ -35,7 +36,7 @@ public class RandomNumberGenerator implements IRandomNumberGenerator {
 
     @Override
     public int nextInt(int min, int max) {
-        return rand.nextInt(max);
+        return rand.nextInt((max - min) + 1) + min;
     }
 
 

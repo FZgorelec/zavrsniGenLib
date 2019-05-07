@@ -6,6 +6,7 @@ import mutation.IMutationAlgorithm;
 import selection.ISelectionAlgorithm;
 import util.IRandomNumberGeneratorProvider;
 import util.RNGThreadProvider;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,8 +23,8 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
     }
 
     public GenerationalGeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
-                                        IGeneticAlgorithmParameters parameters,int numberOfThreads) {
-        super(genotypeFactory, fitnessFunction, parameters,numberOfThreads);
+                                        IGeneticAlgorithmParameters parameters, int numberOfThreads) {
+        super(genotypeFactory, fitnessFunction, parameters, numberOfThreads);
         threadFactory = new RNGThreadProvider();
     }
 
@@ -58,11 +59,11 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
             List<Callable<T[]>> jobList = new ArrayList<>();
             for (int j = 0; j < numberOfIterationsPerGeneration; j++) {
                 jobList.add(() -> {
-                    T parent1 = selectionAlgorithm.select(population,((IRandomNumberGeneratorProvider)Thread.currentThread()).getRNG());
-                    T parent2 = selectionAlgorithm.select(population,((IRandomNumberGeneratorProvider)Thread.currentThread()).getRNG());
-                    T[] children = crossingAlgorithm.cross(parent1, parent2,((IRandomNumberGeneratorProvider)Thread.currentThread()).getRNG());
+                    T parent1 = selectionAlgorithm.select(population, ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
+                    T parent2 = selectionAlgorithm.select(population, ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
+                    T[] children = crossingAlgorithm.cross(parent1, parent2, ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
                     for (int k = 0, len = children.length; k < len; k++) {
-                        children[k] = mutationAlgorithm.mutate(children[k],((IRandomNumberGeneratorProvider)Thread.currentThread()).getRNG());
+                        children[k] = mutationAlgorithm.mutate(children[k], ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
                         children[k].setFitness(fitnessFunction.calculateFitness(children[k]));
                     }
                     return children;

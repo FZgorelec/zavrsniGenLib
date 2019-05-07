@@ -24,28 +24,27 @@ public class DoubleArrayGenerationalGA {
 
     public DoubleArrayGenerationalGA(IGenotypeFactory<DoubleArrayGenome> genotypeFactory, IFitnessFunction<DoubleArrayGenome> fitnessFunction,
                                      IGeneticAlgorithmParameters parameters) {
-        this.generationalGeneticAlgorithm=new GenerationalGeneticAlgorithm<>(genotypeFactory, fitnessFunction, parameters);
+        this.generationalGeneticAlgorithm = new GenerationalGeneticAlgorithm<>(genotypeFactory, fitnessFunction, parameters);
         init();
     }
-
 
 
     public DoubleArrayGenerationalGA(IGenotypeFactory<DoubleArrayGenome> genotypeFactory, IFitnessFunction<DoubleArrayGenome> fitnessFunction,
-                                        IGeneticAlgorithmParameters parameters,int numberOfThreads) {
-        this.generationalGeneticAlgorithm=new GenerationalGeneticAlgorithm<>(genotypeFactory, fitnessFunction, parameters,numberOfThreads);
+                                     IGeneticAlgorithmParameters parameters, int numberOfThreads) {
+        this.generationalGeneticAlgorithm = new GenerationalGeneticAlgorithm<>(genotypeFactory, fitnessFunction, parameters, numberOfThreads);
         init();
 
     }
 
-    public DoubleArrayGenome run(){
+    public DoubleArrayGenome run() {
         return generationalGeneticAlgorithm.runAlgorithm(selection, crossing, mutation);
     }
 
     private void init() {
         BLXAlphaCross cross = new BLXAlphaCross(2, new Random());
         GaussianMutationDouble mutator = new GaussianMutationDouble(new Random(), 0.3, 1);
-        selection=new NTournamentSelectionWithRepetition<>(10);
-        crossing=new ICrossingAlgorithm<DoubleArrayGenome>() {
+        selection = new NTournamentSelectionWithRepetition<>(10);
+        crossing = new ICrossingAlgorithm<DoubleArrayGenome>() {
             @Override
             public DoubleArrayGenome[] cross(DoubleArrayGenome parent1, DoubleArrayGenome parent2, IRandomNumberGenerator random) {
                 return new DoubleArrayGenome[]{new DoubleArrayGenome((cross.cross(parent1.getSolution(), parent2.getSolution(), random)))};
@@ -56,7 +55,7 @@ public class DoubleArrayGenerationalGA {
                 return 1;
             }
         };
-        mutation=((genome, random) -> new DoubleArrayGenome(mutator.mutate(genome.getSolution())));
+        mutation = ((genome, random) -> new DoubleArrayGenome(mutator.mutate(genome.getSolution())));
 
     }
 

@@ -3,7 +3,7 @@ package util;
 import algorithm.IGeneticAlgorithmParameters;
 
 public class GeneticAlgorithmParameters implements IGeneticAlgorithmParameters {
-   private int populationSize;
+    private int populationSize;
     private int numberOfGenerations;
     private double satisfactoryFitness;
 
