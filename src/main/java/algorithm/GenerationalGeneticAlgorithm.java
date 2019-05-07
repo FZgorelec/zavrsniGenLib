@@ -7,6 +7,7 @@ import selection.ISelectionAlgorithm;
 import util.IRandomNumberGeneratorProvider;
 import util.RNGThreadProvider;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -41,10 +42,8 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
         double satisfactoryFitness = parameters.getSatisfactoryFitness();
         T[] population = initPopulation();
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads, threadFactory);
-        //((IRandomNumberGeneratorProvider)Thread.currentThread()).getRNG();
         int numberOfIterationsPerGeneration = calcNumberOfIterationsPerGeneration(populationSize, crossingAlgorithm.numberOfGeneratedChildren());
         for (int i = 0, numberOfGenerations = parameters.numberOfGenerations(); i < numberOfGenerations; i++) {
-
             for (T genotype : population) {
                 if (genotype.getFitness() >= satisfactoryFitness) {
                     foundSatisfactory = true;
@@ -61,9 +60,9 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
                 jobList.add(() -> {
                     T parent1 = selectionAlgorithm.select(population);
                     T parent2 = selectionAlgorithm.select(population);
-                    T[] children = crossingAlgorithm.cross(parent1, parent2);
+                    T[] children = crossingAlgorithm.cross(parent1, parent2,((IRandomNumberGeneratorProvider)Thread.currentThread()).getRNG());
                     for (int k = 0, len = children.length; k < len; k++) {
-                        children[k] = mutationAlgorithm.mutate(children[k]);
+                        children[k] = mutationAlgorithm.mutate(children[k],((IRandomNumberGeneratorProvider)Thread.currentThread()).getRNG());
                         children[k].setFitness(fitnessFunction.calculateFitness(children[k]));
                     }
                     return children;
@@ -74,9 +73,7 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
                 List<Future<T[]>> generatedChildren = executorService.invokeAll(jobList);
                 for (Future<T[]> futureChildArray : generatedChildren) {
                     T[] childArray = futureChildArray.get();
-                    for (T child : childArray) {
-                        newPopulation.add(child);
-                    }
+                    newPopulation.addAll(Arrays.asList(childArray));
                 }
             } catch (InterruptedException e) {
                 System.err.println("Executor service failed");
