@@ -1,11 +1,29 @@
 package algorithmImpl;
 
 import algorithm.IGenotypeFactory;
+import util.IRandomNumberGenerator;
+import util.RandomNumberGenerator;
 
 import java.util.Random;
 
 public class DoubleArrayGenomeFactory implements IGenotypeFactory<DoubleArrayGenome> {
-    Random rand = new Random();
+    private IRandomNumberGenerator rand = new RandomNumberGenerator();
+    private int arraySize=0;
+    private double[][] restrictions=null;
+    private double interval=0;
+    public DoubleArrayGenomeFactory(int arraySize){
+        this.arraySize=arraySize;
+    }
+
+    public DoubleArrayGenomeFactory(int arraySize,double interval){
+        this.arraySize=arraySize;
+        this.interval=interval;
+    }
+
+    public DoubleArrayGenomeFactory(int arraySize,double[][] restirctions){
+        this.arraySize=arraySize;
+        this.restrictions=restirctions;
+    }
 
     @Override
     public DoubleArrayGenome[] getPopulationOfGenotypes(int sizeOfPopulation) {
@@ -17,9 +35,11 @@ public class DoubleArrayGenomeFactory implements IGenotypeFactory<DoubleArrayGen
     }
 
     private DoubleArrayGenome createRadnomDoubleArray() {
-        double[] randomArray = new double[3];
-        for (int i = 0; i < 3; i++) {
-            randomArray[i] = rand.nextDouble() * 10;
+        double[] randomArray = new double[arraySize];
+        for (int i = 0; i < arraySize; i++) {
+            if(restrictions!=null)randomArray[i]=rand.nextDouble(restrictions[i][0],restrictions[i][1]);
+            else if(interval!=0)randomArray[i]=rand.nextDouble(-interval, interval);
+            else randomArray[i] = rand.nextDouble();
         }
 
         return new DoubleArrayGenome(randomArray, 0);

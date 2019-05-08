@@ -1,17 +1,16 @@
 package mutation.impl.doubleArrayMutation;
 
 import mutation.IMutationAlgorithm;
+import util.IRandomNumberGenerator;
 
 import java.util.Random;
 
 public class GaussianMutationDouble {
 
-    private Random rand;
     private double mutationFactor;
     private double sigma;
 
-    public GaussianMutationDouble(Random rand, double mutationFactor, double sigma) {
-        this.rand = rand;
+    public GaussianMutationDouble(double mutationFactor, double sigma) {
         if (mutationFactor > 1 || mutationFactor < 0)
             throw new IllegalArgumentException("mutationFactor represents a percentage," +
                     " the value must be between 0.0 and 1.0");
@@ -19,10 +18,10 @@ public class GaussianMutationDouble {
         this.sigma = sigma;
     }
 
-    public double[] mutate(double[] genome) {
+    public double[] mutate(double[] genome, IRandomNumberGenerator randomNumberGenerator) {
         double[] mutated = new double[genome.length];
         for (int i = 0, length = mutated.length; i < length; i++) {
-            if (rand.nextDouble() <= mutationFactor) mutated[i] = genome[i] + (rand.nextDouble() - 0.5) * sigma;
+            if (randomNumberGenerator.nextDouble() <= mutationFactor) mutated[i] = genome[i] + (randomNumberGenerator.nextDouble() - 0.5) * sigma;
             else mutated[i] = genome[i];
         }
         return mutated;

@@ -9,20 +9,13 @@ abstract class GeneticAlgorithm<T extends IGenotype> {
     protected IGenotypeFactory<T> genotypeFactory;
     protected IFitnessFunction<T> fitnessFunction;
     protected T[] population;
-    protected int numberOfThreads;
 
-    public GeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
-                            IGeneticAlgorithmParameters parameters, int numberOfThreads) {
-        this.genotypeFactory = genotypeFactory;
-        this.parameters = parameters;
-        this.fitnessFunction = fitnessFunction;
-        this.numberOfThreads = numberOfThreads;
-        if (numberOfThreads == 0) this.numberOfThreads = Runtime.getRuntime().availableProcessors();
-    }
 
     public GeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
                             IGeneticAlgorithmParameters parameters) {
-        this(genotypeFactory, fitnessFunction, parameters, 1);
+        this.genotypeFactory = genotypeFactory;
+        this.parameters = parameters;
+        this.fitnessFunction = fitnessFunction;
     }
 
     abstract T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm,
@@ -34,6 +27,19 @@ abstract class GeneticAlgorithm<T extends IGenotype> {
             member.setFitness(fitnessFunction.calculateFitness(member));
         }
         return population;
+    }
+
+
+    protected T findBestInPopulation(T[] population){
+        double bestFitness = -Double.MAX_VALUE;
+        T bestSolution=null;
+        for (int i = 0,populationSize=population.length; i < populationSize; i++) {
+            if (population[i].getFitness() > bestFitness) {
+                bestSolution = population[i];
+                bestFitness = population[i].getFitness();
+            }
+        }
+        return bestSolution;
     }
 
     public T[] getPopulation() {

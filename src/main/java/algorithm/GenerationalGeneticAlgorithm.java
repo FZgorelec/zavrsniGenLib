@@ -1,6 +1,6 @@
 package algorithm;
 
-import crossing.IChildrenSelectionAlgorithm;
+import crossing.IInserter;
 import crossing.ICrossingAlgorithm;
 import mutation.IMutationAlgorithm;
 import selection.ISelectionAlgorithm;
@@ -14,18 +14,20 @@ import java.util.concurrent.*;
 
 public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAlgorithm<T> {
 
-    private ThreadFactory threadFactory;
+    protected ThreadFactory threadFactory;
+    protected int numberOfThreads;
 
     public GenerationalGeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
                                         IGeneticAlgorithmParameters parameters) {
-        super(genotypeFactory, fitnessFunction, parameters);
-        threadFactory = new RNGThreadProvider();
+        this(genotypeFactory, fitnessFunction, parameters,1);
     }
 
     public GenerationalGeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
                                         IGeneticAlgorithmParameters parameters, int numberOfThreads) {
-        super(genotypeFactory, fitnessFunction, parameters, numberOfThreads);
+        super(genotypeFactory, fitnessFunction, parameters);
         threadFactory = new RNGThreadProvider();
+        this.numberOfThreads = numberOfThreads;
+        if (numberOfThreads == 0) this.numberOfThreads = Runtime.getRuntime().availableProcessors();
     }
 
     @Override
@@ -36,22 +38,16 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
 
 
     public T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm,
-                          IMutationAlgorithm<T> mutationAlgorithm, IChildrenSelectionAlgorithm<T> childrenSelectionAlgorithm) {
+                          IMutationAlgorithm<T> mutationAlgorithm, IInserter<T> childrenSelectionAlgorithm) {
         int populationSize = parameters.getPopulationSize();
-        boolean foundSatisfactory = false;
         T bestSolution = null;
         double satisfactoryFitness = parameters.getSatisfactoryFitness();
         T[] population = initPopulation();
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads, threadFactory);
         int numberOfIterationsPerGeneration = calcNumberOfIterationsPerGeneration(populationSize, crossingAlgorithm.numberOfGeneratedChildren());
         for (int i = 0, numberOfGenerations = parameters.numberOfGenerations(); i < numberOfGenerations; i++) {
-            for (T genotype : population) {
-                if (genotype.getFitness() >= satisfactoryFitness) {
-                    foundSatisfactory = true;
-                    bestSolution = genotype;
-                }
-            }
-            if (foundSatisfactory) {
+            bestSolution=findBestInPopulation(population);
+            if (bestSolution.getFitness()>satisfactoryFitness) {
                 executorService.shutdown();
                 return bestSolution;
             }
@@ -90,14 +86,7 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
             }
         }
         executorService.shutdown();
-        double bestFitness = -Double.MAX_VALUE;
-        for (int i = 0; i < populationSize; i++) {
-            if (population[i].getFitness() > bestFitness) {
-                bestSolution = population[i];
-                bestFitness = population[i].getFitness();
-            }
-        }
-        return bestSolution;
+        return findBestInPopulation(population);
     }
 
     public void setThreadFactory(ThreadFactory threadFactory) {
