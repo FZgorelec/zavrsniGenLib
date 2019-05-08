@@ -1,7 +1,6 @@
-import algorithmImpl.DoubleArrayGenerationalGA;
-import algorithmImpl.DoubleArrayGenome;
-import algorithmImpl.DoubleArrayGenomeFactory;
-import algorithmImpl.DoubleArraySteadyStateGA;
+import algorithmImpl.doublearrayimpl.DoubleArrayGenome;
+import algorithmImpl.doublearrayimpl.DoubleArrayGenomeFactory;
+import algorithmImpl.doublearrayimpl.DoubleArraySteadyStateGA;
 import util.GeneticAlgorithmParameters;
 
 public class SteadyStateGaTest {

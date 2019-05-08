@@ -1,4 +1,4 @@
-package algorithmImpl;
+package algorithmImpl.doublearrayimpl;
 
 import algorithm.*;
 

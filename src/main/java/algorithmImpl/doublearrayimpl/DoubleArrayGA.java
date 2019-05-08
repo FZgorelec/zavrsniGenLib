@@ -1,14 +1,13 @@
-package algorithmImpl;
+package algorithmImpl.doublearrayimpl;
 
 import crossing.ICrossingAlgorithm;
-import crossing.impl.doubleArrayCrossing.BLXAlphaCross;
 import mutation.IMutationAlgorithm;
-import mutation.impl.doubleArrayMutation.GaussianMutationDouble;
+
 import selection.ISelectionAlgorithm;
 import selection.impl.NTournamentSelectionWithRepetition;
+import util.GADoubleArrayUtilities;
 import util.IRandomNumberGenerator;
 
-import java.util.Random;
 
 public abstract class DoubleArrayGA {
     protected ISelectionAlgorithm<DoubleArrayGenome> selection;
@@ -22,13 +21,13 @@ public abstract class DoubleArrayGA {
     abstract DoubleArrayGenome run();
 
     protected void init() {
-        BLXAlphaCross cross = new BLXAlphaCross(2, new Random());
-        GaussianMutationDouble mutator = new GaussianMutationDouble(0.3, 1);
+
+
         selection = new NTournamentSelectionWithRepetition<>(10);
         crossing = new ICrossingAlgorithm<DoubleArrayGenome>() {
             @Override
             public DoubleArrayGenome[] cross(DoubleArrayGenome parent1, DoubleArrayGenome parent2, IRandomNumberGenerator random) {
-                return new DoubleArrayGenome[]{new DoubleArrayGenome((cross.cross(parent1.getSolution(), parent2.getSolution(), random)))};
+                return new DoubleArrayGenome[]{new DoubleArrayGenome((GADoubleArrayUtilities.BLXAlphaCross(parent1.getSolution(), parent2.getSolution(), 2, random)))};
             }
 
             @Override
@@ -36,7 +35,7 @@ public abstract class DoubleArrayGA {
                 return 1;
             }
         };
-        mutation = ((genome, random) -> new DoubleArrayGenome(mutator.mutate(genome.getSolution(), random)));
+        mutation = ((genome, random) -> new DoubleArrayGenome(GADoubleArrayUtilities.gaussianMutation(genome.getSolution(),0.3,1, random)));
 
     }
 

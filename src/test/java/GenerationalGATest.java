@@ -1,7 +1,7 @@
 
-import algorithmImpl.DoubleArrayGenerationalGA;
-import algorithmImpl.DoubleArrayGenome;
-import algorithmImpl.DoubleArrayGenomeFactory;
+import algorithmImpl.doublearrayimpl.DoubleArrayGenerationalGA;
+import algorithmImpl.doublearrayimpl.DoubleArrayGenome;
+import algorithmImpl.doublearrayimpl.DoubleArrayGenomeFactory;
 import util.GeneticAlgorithmParameters;
 
 public class GenerationalGATest {
@@ -12,7 +12,7 @@ public class GenerationalGATest {
                 new DoubleArrayGenomeFactory(10,5),
                 (DoubleArrayGenome genome) -> {
                     double sum = 0;
-                    for (int i = 0; i < 2000; i++) {
+                    for (int i = 0; i < 100; i++) {
                         sum += (genome.getSolution()[0] * genome.getSolution()[0]
                                 + genome.getSolution()[1] * genome.getSolution()[1] + Math.abs(3 * genome.getSolution()[2])) + Math.pow(genome.getSolution()[1], 2);
 
@@ -30,6 +30,5 @@ public class GenerationalGATest {
                 + best.getSolution()[1] * best.getSolution()[1] + Math.abs(3 * best.getSolution()[2])));
         System.out.println("Execution time in milliseconds: " + timeElapsed);
     }
-
 
 }
