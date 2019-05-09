@@ -4,6 +4,9 @@ import algorithmImpl.doublearrayimpl.DoubleArrayGenome;
 import crossing.ICrossingAlgorithm;
 import mutation.IMutationAlgorithm;
 import selection.ISelectionAlgorithm;
+import selection.impl.NTournamentSelectionWithRepetition;
+import util.GABitVectorUtil;
+import util.IRandomNumberGenerator;
 
 
 abstract public class BitVectorGA {
@@ -16,26 +19,26 @@ abstract public class BitVectorGA {
         init();
     }
 
-    abstract DoubleArrayGenome run();
+    abstract BitVectorGenome run();
 
     protected void init() {
-        //todo
-//        BLXAlphaCross cross = new BLXAlphaCross(2, new Random());
-//        GaussianMutationDouble mutator = new GaussianMutationDouble(0.3, 1);
-//        selection = new NTournamentSelectionWithRepetition<>(10);
-//        crossing = new ICrossingAlgorithm<DoubleArrayGenome>() {
-//            @Override
-//            public DoubleArrayGenome[] cross(DoubleArrayGenome parent1, DoubleArrayGenome parent2, IRandomNumberGenerator random) {
-//                return new DoubleArrayGenome[]{new DoubleArrayGenome((cross.cross(parent1.getSolution(), parent2.getSolution(), random)))};
-//            }
-//
-//            @Override
-//            public int numberOfGeneratedChildren() {
-//                return 1;
-//            }
-//        };
-//        mutation = ((genome, random) -> new DoubleArrayGenome(mutator.mutate(genome.getSolution(), random)));
+        selection = new NTournamentSelectionWithRepetition<>(5);
+        crossing = new ICrossingAlgorithm<BitVectorGenome>() {
+            @Override
+            public BitVectorGenome[] cross(BitVectorGenome parent1, BitVectorGenome parent2, IRandomNumberGenerator random) {
+                BitVectorGenome[] children = new BitVectorGenome[2];
+                boolean[][] newVectors = GABitVectorUtil.crossNBreakpoints(parent1.getSolution(), parent2.getSolution(), 3, random);
+                children[0] = new BitVectorGenome(newVectors[0]);
+                children[1] = new BitVectorGenome(newVectors[1]);
+                return children;
+            }
 
+            @Override
+            public int numberOfGeneratedChildren() {
+                return 2;
+            }
+        };
+        mutation = (BitVectorGenome toMutate, IRandomNumberGenerator random) -> new BitVectorGenome(GABitVectorUtil.mutate(toMutate.getSolution(), 0.1, random));
     }
 
     public void setSelection(ISelectionAlgorithm<BitVectorGenome> selection) {

@@ -47,7 +47,7 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
         int numberOfIterationsPerGeneration = calcNumberOfIterationsPerGeneration(populationSize, crossingAlgorithm.numberOfGeneratedChildren());
         for (int i = 0, numberOfGenerations = parameters.numberOfGenerations(); i < numberOfGenerations; i++) {
             bestSolution=findBestInPopulation(population);
-            if (bestSolution.getFitness()>satisfactoryFitness) {
+            if (bestSolution.getFitness()>=satisfactoryFitness) {
                 executorService.shutdown();
                 return bestSolution;
             }

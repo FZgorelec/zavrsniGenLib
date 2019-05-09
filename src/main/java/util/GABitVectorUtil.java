@@ -1,6 +1,6 @@
 package util;
 
-public class BitVectorUtil {
+public class GABitVectorUtil {
 
     public static boolean[][] crossNBreakpoints(boolean[] parent1, boolean[] parent2, int numberOfBreakpoints, IRandomNumberGenerator randomNumberGenerator) {
         if (parent1.length != parent2.length) throw new IllegalArgumentException("Parents must be of same length");

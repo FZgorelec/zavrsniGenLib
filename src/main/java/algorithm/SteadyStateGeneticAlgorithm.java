@@ -27,7 +27,7 @@ public class SteadyStateGeneticAlgorithm<T extends IGenotype> extends GeneticAlg
         T bestSolution=null;
         for (int i = 0, numberOfGenerations = parameters.numberOfGenerations(); i < numberOfGenerations; i++) {
             bestSolution=findBestInPopulation(population);
-            if (bestSolution.getFitness()>satisfactoryFitness) {
+            if (bestSolution.getFitness()>=satisfactoryFitness) {
                 return bestSolution;
             }
             T parent1 = selectionAlgorithm.select(population, randomNumberGenerator);
