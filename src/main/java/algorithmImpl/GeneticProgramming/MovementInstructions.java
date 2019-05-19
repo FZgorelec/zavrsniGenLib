@@ -1,5 +1,5 @@
 package algorithmImpl.GeneticProgramming;
 
-public enum ANTInstructions {
+public enum MovementInstructions {
     ROTATE_RIGHT,ROTATE_LEFT,MOVE
 }
