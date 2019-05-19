@@ -1,5 +1,8 @@
 package algorithmImpl.GeneticProgramming;
 
-public interface ITreeFactory<T> {
+import algorithm.IGenotypeFactory;
+
+public interface ITreeFactory extends IGenotypeFactory<ITree> {
     ITree getRandomTree();
+
 }
