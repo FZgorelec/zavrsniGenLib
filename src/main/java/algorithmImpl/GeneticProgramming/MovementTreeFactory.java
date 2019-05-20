@@ -40,7 +40,7 @@ public class MovementTreeFactory implements ITreeFactory, IGenotypeFactory<ITree
     }
 
     private Node generateTerminatingNode(INode parent, IRandomNumberGenerator random) {
-        return new Node(parent, false, terminatingValues[random.nextInt(0, terminatingValues.length - 1)], 0);
+        return new Node(parent, true, terminatingValues[random.nextInt(0, terminatingValues.length - 1)], 0);
     }
 
     private Node generateNonTerminatingNode(INode parent, IRandomNumberGenerator random) {

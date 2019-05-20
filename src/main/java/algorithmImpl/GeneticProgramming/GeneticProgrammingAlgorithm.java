@@ -22,7 +22,7 @@ public class GeneticProgrammingAlgorithm {
         selection = new NTournamentSelectionWithRepetition(10);
         mutation = (ITree genome, IRandomNumberGenerator random) -> {
             ITree treeCopy = genome.copyTree();
-            INode pickedNode = pickRandomNode(random.nextInt(1, genome.getHead().getChildrenBelow() + 1), 0, treeCopy.getHead());
+            INode pickedNode = pickRandomNode(random.nextInt(1, treeCopy.getHead().getChildrenBelow() + 1), 1, treeCopy.getHead());
             int oldChildrenBelow = pickedNode.getChildrenBelow();
             for (int i = 0; i <5 ; i++) {
                 ITree newTree = factory.getRandomTree(random.nextInt(1,maxTreeDepth - getNumberOfParents(pickedNode)),random);
@@ -41,12 +41,13 @@ public class GeneticProgrammingAlgorithm {
                 ITree[] children = new ITree[]{parent1.copyTree()};
                 INode nodeFromParent1 = pickRandomNode(random.nextInt(1, parent1.getHead().getChildrenBelow()+1), 1, children[0].getHead());
                 int parentsOfNode1 = getNumberOfParents(nodeFromParent1);
+                int childrenBefore=nodeFromParent1.getChildrenBelow();
                 for (int i = 0; i < 5; i++) {
-                    INode nodeFromParent2 = pickRandomNode(random.nextInt(1, parent1.getHead().getChildrenBelow() + 1), 1, parent2.getHead());
+                    INode nodeFromParent2 = pickRandomNode(random.nextInt(1, parent2.getHead().getChildrenBelow() + 1), 1, parent2.getHead());
                     if ((parentsOfNode1 + depth(nodeFromParent2) <= maxTreeDepth) && (parent1.getHead().getChildrenBelow() + 1 - nodeFromParent1.getChildrenBelow() + nodeFromParent2.getChildrenBelow()) <= maxNumberOfNodes) {
-                        int childrenBefore=nodeFromParent1.getChildrenBelow();
                         nodeFromParent1.replaceNode(nodeFromParent2);
                         nodeFromParent1.updateParents(childrenBefore);
+                        break;
                     }
                 }
                 children[0].setDepth(depth(children[0].getHead()));
@@ -69,19 +70,22 @@ public class GeneticProgrammingAlgorithm {
     }
 
     private INode pickRandomNode(int nodeNumber, int currentNumber, INode node) {
-        return node;
         //todo
-//        INode chosenNode = null;
-//        if(node==null)return null;
-//        if (currentNumber == nodeNumber) return node;
-//        else {
-//            INode[] children = node.getChildren();
-//            for (int i = 0; i < children.length; i++) {
-//                chosenNode = pickRandomNode(nodeNumber, currentNumber + i, children[i]);
-//                if (chosenNode!=null) return chosenNode;
-//            }
-//        }
-//        return chosenNode;
+        INode chosenNode = null;
+        if(node==null)return null;
+        if (currentNumber == nodeNumber) return node;
+        else {
+            INode[] children = node.getChildren();
+            chosenNode=pickRandomNode(nodeNumber, currentNumber + 1, children[0]);
+            if (chosenNode!=null) return chosenNode;
+            for (int i = 1; i < children.length; i++) {
+                if(children[i-1]==null)break;
+                currentNumber+=1+children[i-1].getChildrenBelow();
+                chosenNode = pickRandomNode(nodeNumber, currentNumber + 1, children[i]);
+                if (chosenNode!=null) return chosenNode;
+            }
+        }
+        return chosenNode;
     }
     public ITree run(){
         return geneticAlgorithm.runAlgorithm(selection, crossing, mutation);
