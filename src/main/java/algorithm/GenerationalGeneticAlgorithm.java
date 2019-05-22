@@ -19,7 +19,7 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
 
     public GenerationalGeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
                                         IGeneticAlgorithmParameters parameters) {
-        this(genotypeFactory, fitnessFunction, parameters,1);
+        this(genotypeFactory, fitnessFunction, parameters, 1);
     }
 
     public GenerationalGeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
@@ -46,8 +46,8 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads, threadFactory);
         int numberOfIterationsPerGeneration = calcNumberOfIterationsPerGeneration(populationSize, crossingAlgorithm.numberOfGeneratedChildren());
         for (int i = 0, numberOfGenerations = parameters.numberOfGenerations(); i < numberOfGenerations; i++) {
-            bestSolution=findBestInPopulation(population);
-            if (bestSolution.getFitness()>=satisfactoryFitness) {
+            bestSolution = findBestInPopulation(population);
+            if (bestSolution.getFitness() >= satisfactoryFitness) {
                 executorService.shutdown();
                 return bestSolution;
             }
@@ -100,6 +100,5 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
         if (childrenCreated == 1) return popSize;
         if (popSize % childrenCreated == 0) return popSize / childrenCreated;
         return popSize / childrenCreated + 1;
-
     }
 }
