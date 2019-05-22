@@ -11,7 +11,7 @@ public class MovementTreeFactory implements ITreeFactory, IGenotypeFactory<ITree
 
     private String[] terminatingValues;
     private String[] nonTerminatingValues;
-    private double growProbability = 0.85;
+    private double growProbability = 0.60;
     private IRandomNumberGenerator numberGenerator;
     private int maxDepth;
     private int maxNumberOfNodes;

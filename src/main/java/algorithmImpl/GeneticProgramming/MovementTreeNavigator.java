@@ -91,33 +91,39 @@ public class MovementTreeNavigator {
 
     protected boolean isWallAhead() {
         int[] newPosition=calculateNextPosition();
-        if (mapCopy[newPosition[0]][newPosition[1]].equals(MapValues.WALL.toString())) return true;
+        if(newPosition[0]>=maxX||newPosition[0]<0||newPosition[1]>=maxY||newPosition[1]<0)return true;
+        if (mapCopy[newPosition[1]][newPosition[0]].equals(MapValues.WALL.toString())) return true;
         return false;
     }
 
     protected boolean isFoodAhead() {
         int[] newPosition=calculateNextPosition();
-        if (mapCopy[newPosition[0]][newPosition[1]].equals(MapValues.FOOD.toString())) return true;
+        if(newPosition[0]>=maxX||newPosition[0]<0||newPosition[1]>=maxY||newPosition[1]<0)return false;
+        if (mapCopy[newPosition[1]][newPosition[0]].equals(MapValues.FOOD.toString())) return true;
         return false;
     }
 
     protected boolean isBombAhead() {
         int[] newPosition=calculateNextPosition();
-        if (mapCopy[newPosition[0]][newPosition[1]].equals(MapValues.FOOD.toString())) return true;
+        if(newPosition[0]>=maxX||newPosition[0]<0||newPosition[1]>=maxY||newPosition[1]<0)return false;
+        if (mapCopy[newPosition[1]][newPosition[0]].equals(MapValues.BOMB.toString())) return true;
         return false;
     }
     protected boolean isWallAhead(int x, int y) {
-        if (mapCopy[x][y].equals(MapValues.WALL.toString())) return true;
+        if(x>=maxX||x<0||y>=maxY||y<0)return true;
+        if (mapCopy[y][x].equals(MapValues.WALL.toString())) return true;
         return false;
     }
 
     protected boolean isFoodAhead(int x, int y) {
-        if (mapCopy[x][y].equals(MapValues.FOOD.toString())) return true;
+        if(x>=maxX||x<0||y>=maxY||y<0)return false;
+        if (mapCopy[y][x].equals(MapValues.FOOD.toString())) return true;
         return false;
     }
 
     protected boolean isBombAhead(int x, int y) {
-        if (mapCopy[x][y].equals(MapValues.FOOD.toString())) return true;
+        if(x>=maxX||x<0||y>=maxY||y<0)return false;
+        if (mapCopy[y][x].equals(MapValues.BOMB.toString())) return true;
         return false;
     }
 }

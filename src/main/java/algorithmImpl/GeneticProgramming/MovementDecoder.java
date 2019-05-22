@@ -19,6 +19,7 @@ public class MovementDecoder extends MovementTreeNavigator {
         position[0] = 0;
         position[1] = 0;
         position[2] = 1;
+        this.numberOfSteps = numberOfSteps;
         copyMap();
         fillMovesList(moves, tree.getHead(), tree.getHead(), 1);
         return moves;
@@ -30,12 +31,12 @@ public class MovementDecoder extends MovementTreeNavigator {
         if (numberOfSteps == 0) return;
         if (node.isTerminating()) {
             String operation = node.getValue();
-            list.add(operation);
+            list.add(new String(operation));
             numberOfSteps--;
             if (operation.equals(MOVE.toString())) {
                 updatePositionMove();
-                if (mapCopy[position[0]][position[1]].equals(FOOD.toString()) || mapCopy[position[0]][position[1]].equals(BOMB.toString())) {
-                    mapCopy[position[0]][position[1]] = OPENFIELD.toString();
+                if (mapCopy[position[1]][position[0]].equals(FOOD.toString()) || mapCopy[position[1]][position[0]].equals(BOMB.toString())) {
+                    mapCopy[position[1]][position[0]] = OPENFIELD.toString();
                 }
             } else if (operation.equals(ROTATE_RIGHT.toString())) {
                 position[2] = (position[2] + 1) % 4;
@@ -44,33 +45,31 @@ public class MovementDecoder extends MovementTreeNavigator {
             }
             if (currentNodeIndex == headNode.getChildrenBelow() + 1) fillMovesList(list, headNode, headNode, 1);
         } else {
-            if (isFoodAhead()) {
-                fillMovesList(list, node.getChildren()[0], headNode, currentNodeIndex + 2 + node.getChildren()[1].getChildrenBelow());
-                if (node.getValue().equals(IF_FOOD_AHEAD.toString())) {
-                    if (isFoodAhead())
-                        fillMovesList(list, node.getChildren()[0], headNode, currentNodeIndex + 2 + node.getChildren()[1].getChildrenBelow());
-                    else
-                        fillMovesList(list, node.getChildren()[1], headNode, currentNodeIndex + 2 + node.getChildren()[0].getChildrenBelow());
+            if (node.getValue().equals(IF_FOOD_AHEAD.toString())) {
+                if (isFoodAhead())
+                    fillMovesList(list, node.getChildren()[0], headNode, currentNodeIndex + 2 + node.getChildren()[1].getChildrenBelow());
+                else
+                    fillMovesList(list, node.getChildren()[1], headNode, currentNodeIndex + 2 + node.getChildren()[0].getChildrenBelow());
 
-                } else if (node.getValue().equals(IF_BOMB_AHEAD.toString())) {
-                    if (isBombAhead())
-                        fillMovesList(list, node.getChildren()[0], headNode, currentNodeIndex + 2 + node.getChildren()[1].getChildrenBelow());
-                    else
-                        fillMovesList(list, node.getChildren()[1], headNode, currentNodeIndex + 2 + node.getChildren()[0].getChildrenBelow());
-                } else if (node.getValue().equals(IF_WALL_AHEAD.toString())) {
-                    if (isWallAhead())
-                        fillMovesList(list, node.getChildren()[0], headNode, currentNodeIndex + 2 + node.getChildren()[1].getChildrenBelow());
-                    else
-                        fillMovesList(list, node.getChildren()[1], headNode, currentNodeIndex + 2 + node.getChildren()[0].getChildrenBelow());
-                } else if (node.getValue().equals("prog2")) {
-                    fillMovesList(list, node.getChildren()[0], headNode, currentNodeIndex + 1);
+            } else if (node.getValue().equals(IF_BOMB_AHEAD.toString())) {
+                if (isBombAhead())
+                    fillMovesList(list, node.getChildren()[0], headNode, currentNodeIndex + 2 + node.getChildren()[1].getChildrenBelow());
+                else
                     fillMovesList(list, node.getChildren()[1], headNode, currentNodeIndex + 2 + node.getChildren()[0].getChildrenBelow());
-                } else {
-                    fillMovesList(list, node.getChildren()[0], headNode, currentNodeIndex + 1);
+            } else if (node.getValue().equals(IF_WALL_AHEAD.toString())) {
+                if (isWallAhead())
+                    fillMovesList(list, node.getChildren()[0], headNode, currentNodeIndex + 2 + node.getChildren()[1].getChildrenBelow());
+                else
                     fillMovesList(list, node.getChildren()[1], headNode, currentNodeIndex + 2 + node.getChildren()[0].getChildrenBelow());
-                    fillMovesList(list, node.getChildren()[2], headNode, currentNodeIndex + 3 + node.getChildren()[0].getChildrenBelow() + node.getChildren()[1].getChildrenBelow());
-                }
+            } else if (node.getValue().equals(PROG2.toString())) {
+                fillMovesList(list, node.getChildren()[0], headNode, currentNodeIndex + 1);
+                fillMovesList(list, node.getChildren()[1], headNode, currentNodeIndex + 2 + node.getChildren()[0].getChildrenBelow());
+            } else {
+                fillMovesList(list, node.getChildren()[0], headNode, currentNodeIndex + 1);
+                fillMovesList(list, node.getChildren()[1], headNode, currentNodeIndex + 2 + node.getChildren()[0].getChildrenBelow());
+                fillMovesList(list, node.getChildren()[2], headNode, currentNodeIndex + 3 + node.getChildren()[0].getChildrenBelow() + node.getChildren()[1].getChildrenBelow());
             }
+
         }
     }
 

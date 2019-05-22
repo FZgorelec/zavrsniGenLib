@@ -3,9 +3,16 @@ import algorithmImpl.GeneticProgramming.*;
 import util.GeneticAlgorithmParameters;
 import util.RandomNumberGenerator;
 
+import java.util.List;
+
+import static algorithmImpl.GeneticProgramming.MapValues.*;
 public class GPtest {
 
     public static void main(String[] args) {
+        test2();
+    }
+
+    private static void test1(){
         MovementTreeFactory fact=new MovementTreeFactory(8,100);
         GenerationalGeneticAlgorithm<ITree> ga=new GenerationalGeneticAlgorithm<>(fact,
                 (ITree genome) -> {
@@ -16,6 +23,36 @@ public class GPtest {
         System.out.println(tree.getFitness());
         printNodes(tree.getHead());
         System.out.println(tree);
+    }
+
+    private static void test2(){
+        String[][] map=new String[][]{{OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()}};
+        MovementTreeFactory fact=new MovementTreeFactory(8,100);
+        MovementTreeEvaluator evaluator=new MovementTreeEvaluator(map, 200);
+        GenerationalGeneticAlgorithm<ITree> ga=new GenerationalGeneticAlgorithm<>(fact,
+                (ITree genome) -> {
+                    return evaluator.evaluate(genome);
+                }, new GeneticAlgorithmParameters(40, 10000, 100));
+        GeneticProgrammingAlgorithm gpa=new GeneticProgrammingAlgorithm(ga,fact,10,100 );
+        ITree tree=gpa.run();
+        System.out.println(tree.getFitness());
+        printNodes(tree.getHead());
+        System.out.println(tree);
+        MovementDecoder decoder=new MovementDecoder(map, 200);
+        List<String> movements= decoder.treeToMovementList(tree, 200);
+        System.out.println("Potezi");
+        for (String s :
+                movements) {
+            System.out.println(s);
+        }
     }
     private static double numberOfMoveNodes(INode node){
         double sum=0;
