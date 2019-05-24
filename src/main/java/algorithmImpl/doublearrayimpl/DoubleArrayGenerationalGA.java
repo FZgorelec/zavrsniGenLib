@@ -1,10 +1,6 @@
 package algorithmImpl.doublearrayimpl;
 
-import algorithm.GenerationalGeneticAlgorithm;
-import algorithm.IFitnessFunction;
-import algorithm.IGeneticAlgorithmParameters;
-import algorithm.IGenotypeFactory;
-import crossing.IInserter;
+import algorithm.*;
 
 
 public class DoubleArrayGenerationalGA extends DoubleArrayGA {

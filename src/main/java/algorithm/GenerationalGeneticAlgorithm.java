@@ -1,11 +1,12 @@
 package algorithm;
 
-import crossing.IInserter;
 import crossing.ICrossingAlgorithm;
 import mutation.IMutationAlgorithm;
 import selection.ISelectionAlgorithm;
+import util.IRandomNumberGenerator;
 import util.IRandomNumberGeneratorProvider;
 import util.RNGThreadProvider;
+import util.RandomNumberGenerator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
 
     protected ThreadFactory threadFactory;
     protected int numberOfThreads;
+    private IRandomNumberGenerator rng=new RandomNumberGenerator();
 
     public GenerationalGeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
                                         IGeneticAlgorithmParameters parameters) {
@@ -78,7 +80,7 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
                 e.printStackTrace();
             }
 
-            if (childrenSelectionAlgorithm != null) childrenSelectionAlgorithm.newPopulation(population, newPopulation);
+            if (childrenSelectionAlgorithm != null) childrenSelectionAlgorithm.insert(population, newPopulation,rng);
             else {
                 for (int j = 0; j < populationSize; j++) {
                     population[j] = newPopulation.get(j);

@@ -1,10 +1,7 @@
 package algorithmImpl.bitvectorimpl;
 
-import algorithm.GenerationalGeneticAlgorithm;
-import algorithm.IFitnessFunction;
-import algorithm.IGeneticAlgorithmParameters;
-import algorithm.IGenotypeFactory;
-import crossing.IInserter;
+import algorithm.*;
+
 
 public class BitVectorGenerationalGA extends BitVectorGA{
     private GenerationalGeneticAlgorithm<BitVectorGenome> generationalGeneticAlgorithm;

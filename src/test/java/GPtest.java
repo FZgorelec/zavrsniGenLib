@@ -18,41 +18,42 @@ public class GPtest {
                 (ITree genome) -> {
                     return numberOfMoveNodes(genome.getHead());
                 }, new GeneticAlgorithmParameters(30, 1000, 100));
-        GeneticProgrammingAlgorithm gpa=new GeneticProgrammingAlgorithm(ga,fact,10,100 );
-        ITree tree=gpa.run();
+        GeneticProgrammingAlgorithm gpa=new GeneticProgrammingAlgorithm(ga,fact,6,200 );
+        ITree tree=gpa.run(false);
         System.out.println(tree.getFitness());
         printNodes(tree.getHead());
         System.out.println(tree);
     }
 
     private static void test2(){
-        String[][] map=new String[][]{{OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
-                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
-                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
-                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
-                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
-                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
-                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
-                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
-                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()}};
-        MovementTreeFactory fact=new MovementTreeFactory(8,100);
-        MovementTreeEvaluator evaluator=new MovementTreeEvaluator(map, 200);
+        String[][] map=new String[][]{{OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),OPENFIELD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),FOOD.toString(),OPENFIELD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()}};
+        MovementTreeFactory fact=new MovementTreeFactory(6,300);
+        MovementTreeEvaluator evaluator=new MovementTreeEvaluator(map, 250);
         GenerationalGeneticAlgorithm<ITree> ga=new GenerationalGeneticAlgorithm<>(fact,
                 (ITree genome) -> {
                     return evaluator.evaluate(genome);
-                }, new GeneticAlgorithmParameters(40, 10000, 100));
-        GeneticProgrammingAlgorithm gpa=new GeneticProgrammingAlgorithm(ga,fact,10,100 );
-        ITree tree=gpa.run();
-        System.out.println(tree.getFitness());
+                }, new GeneticAlgorithmParameters(21, 60000, 14.01));
+        GeneticProgrammingAlgorithm gpa=new GeneticProgrammingAlgorithm(ga,fact,6,250 );
+        ITree tree=gpa.run(true);
+
         printNodes(tree.getHead());
         System.out.println(tree);
-        MovementDecoder decoder=new MovementDecoder(map, 200);
-        List<String> movements= decoder.treeToMovementList(tree, 200);
+        MovementDecoder decoder=new MovementDecoder(map, 250);
+        List<String> movements= decoder.treeToMovementList(tree, 250);
         System.out.println("Potezi");
         for (String s :
                 movements) {
             System.out.println(s);
         }
+        System.out.println(tree.getFitness());
     }
     private static double numberOfMoveNodes(INode node){
         double sum=0;

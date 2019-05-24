@@ -6,6 +6,9 @@ import selection.ISelectionAlgorithm;
 import util.IRandomNumberGenerator;
 import util.RandomNumberGenerator;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 public class SteadyStateGeneticAlgorithm<T extends IGenotype> extends GeneticAlgorithm<T> {
 
     IRandomNumberGenerator randomNumberGenerator = new RandomNumberGenerator();
@@ -38,7 +41,7 @@ public class SteadyStateGeneticAlgorithm<T extends IGenotype> extends GeneticAlg
                 children[j].setFitness(fitnessFunction.calculateFitness(children[j]));
             }
             if(inserter==null)population[findWorstIndex(population)] = findBestInPopulation(children);
-            else inserter.insert(population, children, randomNumberGenerator);
+            else inserter.insert(population, Arrays.asList(children), randomNumberGenerator);
         }
 
         return findBestInPopulation(population);
