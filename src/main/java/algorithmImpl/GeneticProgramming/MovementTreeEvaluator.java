@@ -13,8 +13,8 @@ public class MovementTreeEvaluator extends MovementTreeNavigator {
 
     public MovementTreeEvaluator(String[][] map, int numberOfSteps) {
         super(map, numberOfSteps);
-        rotationPunish=0.09/numberOfSteps;
-        wallHitPunish=0.98/numberOfSteps;
+        rotationPunish = 0.09 / numberOfSteps;
+        wallHitPunish = 0.98 / numberOfSteps;
     }
 
     public double evaluate(ITree<String> tree) {
@@ -52,7 +52,7 @@ public class MovementTreeEvaluator extends MovementTreeNavigator {
                 position[2] = (position[2] + 1) % 4;
                 fitness -= rotationPunish;
             } else if (operation.equals(ROTATE_LEFT.toString())) {
-                position[2] = (position[2] - 1) % 4;
+                position[2] = (position[2] - 1 + 4) % 4;
                 fitness -= rotationPunish;
             }
             if (currentNodeIndex == headNode.getChildrenBelow() + 1) traverseTree(headNode, headNode, 1);

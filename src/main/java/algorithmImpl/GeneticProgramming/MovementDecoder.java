@@ -41,7 +41,7 @@ public class MovementDecoder extends MovementTreeNavigator {
             } else if (operation.equals(ROTATE_RIGHT.toString())) {
                 position[2] = (position[2] + 1) % 4;
             } else if (operation.equals(ROTATE_LEFT.toString())) {
-                position[2] = (position[2] - 1) % 4;
+                position[2] = (position[2] - 1 + 4) % 4;
             }
             if (currentNodeIndex == headNode.getChildrenBelow() + 1) fillMovesList(list, headNode, headNode, 1);
         } else {

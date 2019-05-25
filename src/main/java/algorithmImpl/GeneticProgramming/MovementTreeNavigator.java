@@ -30,7 +30,7 @@ public class MovementTreeNavigator {
             case 0:
                 newX = position[0];
                 newY = position[1] - 1;
-                if (!isWallAhead(newX,newY) && newY > 0) {
+                if (!isWallAhead(newX,newY) && newY >= 0) {
                     position[0] = newX;
                     position[1] = newY;
                 }
@@ -54,7 +54,7 @@ public class MovementTreeNavigator {
             case 3:
                 newX = position[0] - 1;
                 newY = position[1];
-                if (!isWallAhead(newX,newY) && newX > 0) {
+                if (!isWallAhead(newX,newY) && newX >= 0) {
                     position[0] = newX;
                     position[1] = newY;
                 }
@@ -69,7 +69,6 @@ public class MovementTreeNavigator {
             case 0:
                 newX = position[0];
                 newY = position[1] - 1;
-
                 break;
             case 1:
                 newX = position[0] + 1;
