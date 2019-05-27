@@ -20,7 +20,7 @@ public class GeneticProgrammingAlgorithm {
     public GeneticProgrammingAlgorithm(GenerationalGeneticAlgorithm<ITree> geneticAlgorithm, ITreeFactory treeFactory, int maxTreeDepth, int maxNumberOfNodes) {
         this.factory = treeFactory;
         this.geneticAlgorithm = geneticAlgorithm;
-        selection = new NTournamentSelectionWithRepetition(5);
+        selection = new NTournamentSelectionWithRepetition(11);
         mutation = (ITree genome, IRandomNumberGenerator random) -> {
             ITree treeCopy = genome.copyTree();
             INode pickedNode = pickRandomNode(random.nextInt(1, treeCopy.getHead().getChildrenBelow() + 1), 1, treeCopy.getHead());
@@ -89,6 +89,7 @@ public class GeneticProgrammingAlgorithm {
     }
 
     public ITree run(boolean keepBestOfGen) {
+
         if (keepBestOfGen) {
             return geneticAlgorithm.runAlgorithm(selection, crossing, mutation, (oldPopulation, children, random) -> {
                 double bestFit = -Double.MAX_VALUE;
