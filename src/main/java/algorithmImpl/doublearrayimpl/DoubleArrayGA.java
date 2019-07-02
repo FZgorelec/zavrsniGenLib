@@ -1,18 +1,18 @@
 package algorithmImpl.doublearrayimpl;
 
-import crossing.ICrossingAlgorithm;
-import mutation.IMutationAlgorithm;
+import crossing.ICross;
+import mutation.IMutator;
 
-import selection.ISelectionAlgorithm;
+import selection.ISelector;
 import selection.impl.NTournamentSelectionWithRepetition;
 import util.GADoubleArrayUtilities;
 import util.IRandomNumberGenerator;
 
 
 public abstract class DoubleArrayGA {
-    protected ISelectionAlgorithm<DoubleArrayGenome> selection;
-    protected ICrossingAlgorithm<DoubleArrayGenome> crossing;
-    protected IMutationAlgorithm<DoubleArrayGenome> mutation;
+    protected ISelector<DoubleArrayGenome> selection;
+    protected ICross<DoubleArrayGenome> crossing;
+    protected IMutator<DoubleArrayGenome> mutation;
 
     public DoubleArrayGA() {
         init();
@@ -24,7 +24,7 @@ public abstract class DoubleArrayGA {
 
 
         selection = new NTournamentSelectionWithRepetition<>(10);
-        crossing = new ICrossingAlgorithm<DoubleArrayGenome>() {
+        crossing = new ICross<DoubleArrayGenome>() {
             @Override
             public DoubleArrayGenome[] cross(DoubleArrayGenome parent1, DoubleArrayGenome parent2, IRandomNumberGenerator random) {
                 return new DoubleArrayGenome[]{new DoubleArrayGenome((GADoubleArrayUtilities.BLXAlphaCross(parent1.getSolution(), parent2.getSolution(), 2, random)))};
@@ -39,15 +39,15 @@ public abstract class DoubleArrayGA {
 
     }
 
-    public void setSelection(ISelectionAlgorithm<DoubleArrayGenome> selection) {
+    public void setSelection(ISelector<DoubleArrayGenome> selection) {
         this.selection = selection;
     }
 
-    public void setCrossing(ICrossingAlgorithm<DoubleArrayGenome> crossing) {
+    public void setCrossing(ICross<DoubleArrayGenome> crossing) {
         this.crossing = crossing;
     }
 
-    public void setMutation(IMutationAlgorithm<DoubleArrayGenome> mutation) {
+    public void setMutation(IMutator<DoubleArrayGenome> mutation) {
         this.mutation = mutation;
     }
 }

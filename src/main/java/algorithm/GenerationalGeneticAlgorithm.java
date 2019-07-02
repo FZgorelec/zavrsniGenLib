@@ -1,8 +1,8 @@
 package algorithm;
 
-import crossing.ICrossingAlgorithm;
-import mutation.IMutationAlgorithm;
-import selection.ISelectionAlgorithm;
+import crossing.ICross;
+import mutation.IMutator;
+import selection.ISelector;
 import util.IRandomNumberGenerator;
 import util.IRandomNumberGeneratorProvider;
 import util.RNGThreadProvider;
@@ -13,11 +13,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAlgorithm<T> {
 
+public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAlgorithm<T> {
     protected ThreadFactory threadFactory;
     protected int numberOfThreads;
-    private IRandomNumberGenerator rng=new RandomNumberGenerator();
+    private IRandomNumberGenerator rng = new RandomNumberGenerator();
 
     public GenerationalGeneticAlgorithm(IGenotypeFactory<T> genotypeFactory, IFitnessFunction<T> fitnessFunction,
                                         IGeneticAlgorithmParameters parameters) {
@@ -33,20 +33,20 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
     }
 
     @Override
-    public T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm,
-                          IMutationAlgorithm<T> mutationAlgorithm) {
+    public T runAlgorithm(ISelector<T> selectionAlgorithm, ICross<T> crossingAlgorithm,
+                          IMutator<T> mutationAlgorithm) {
         return runAlgorithm(selectionAlgorithm, crossingAlgorithm, mutationAlgorithm, null);
     }
 
 
-    public T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm,
-                          IMutationAlgorithm<T> mutationAlgorithm, IInserter<T> childrenSelectionAlgorithm) {
+    public T runAlgorithm(ISelector<T> selector, ICross<T> cross,
+                          IMutator<T> mutator, INextPopulationGenerator<T> nextPopulationGenerator) {
         int populationSize = parameters.getPopulationSize();
-        T bestSolution = null;
+        T bestSolution;
         double satisfactoryFitness = parameters.getSatisfactoryFitness();
         T[] population = initPopulation();
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads, threadFactory);
-        int numberOfIterationsPerGeneration = calcNumberOfIterationsPerGeneration(populationSize, crossingAlgorithm.numberOfGeneratedChildren());
+        int numberOfIterationsPerGeneration = calcNumberOfIterationsPerGeneration(populationSize, cross.numberOfGeneratedChildren());
         for (int i = 0, numberOfGenerations = parameters.numberOfGenerations(); i < numberOfGenerations; i++) {
             bestSolution = findBestInPopulation(population);
             if (bestSolution.getFitness() >= satisfactoryFitness) {
@@ -57,17 +57,16 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
             List<Callable<T[]>> jobList = new ArrayList<>();
             for (int j = 0; j < numberOfIterationsPerGeneration; j++) {
                 jobList.add(() -> {
-                    T parent1 = selectionAlgorithm.select(population, ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
-                    T parent2 = selectionAlgorithm.select(population, ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
-                    T[] children = crossingAlgorithm.cross(parent1, parent2, ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
+                    T parent1 = selector.select(population, ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
+                    T parent2 = selector.select(population, ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
+                    T[] children = cross.cross(parent1, parent2, ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
                     for (int k = 0, len = children.length; k < len; k++) {
-                        children[k] = mutationAlgorithm.mutate(children[k], ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
+                        children[k] = mutator.mutate(children[k], ((IRandomNumberGeneratorProvider) Thread.currentThread()).getRNG());
                         children[k].setFitness(fitnessFunction.calculateFitness(children[k]));
                     }
                     return children;
                 });
             }
-
             try {
                 List<Future<T[]>> generatedChildren = executorService.invokeAll(jobList);
                 for (Future<T[]> futureChildArray : generatedChildren) {
@@ -79,8 +78,8 @@ public class GenerationalGeneticAlgorithm<T extends IGenotype> extends GeneticAl
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-
-            if (childrenSelectionAlgorithm != null) childrenSelectionAlgorithm.insert(population, newPopulation,rng);
+            if (nextPopulationGenerator != null)
+                nextPopulationGenerator.nextPopulation(population, newPopulation, rng);
             else {
                 for (int j = 0; j < populationSize; j++) {
                     population[j] = newPopulation.get(j);

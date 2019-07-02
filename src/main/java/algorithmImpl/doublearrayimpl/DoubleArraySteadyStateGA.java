@@ -5,7 +5,7 @@ import algorithm.*;
 
 public class DoubleArraySteadyStateGA extends DoubleArrayGA {
     private SteadyStateGeneticAlgorithm<DoubleArrayGenome> steadyStateGeneticAlgorithm;
-    private IInserter<DoubleArrayGenome> selector = null;
+    private INextPopulationGenerator<DoubleArrayGenome> selector = null;
 
     public DoubleArraySteadyStateGA(IGenotypeFactory<DoubleArrayGenome> genotypeFactory, IFitnessFunction<DoubleArrayGenome> fitnessFunction,
                                     IGeneticAlgorithmParameters parameters) {
@@ -20,7 +20,7 @@ public class DoubleArraySteadyStateGA extends DoubleArrayGA {
         else return steadyStateGeneticAlgorithm.runAlgorithm(selection, crossing, mutation, selector);
     }
 
-    public void setSelector(IInserter<DoubleArrayGenome> selector) {
+    public void setSelector(INextPopulationGenerator<DoubleArrayGenome> selector) {
         this.selector = selector;
     }
 }

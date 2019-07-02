@@ -1,8 +1,8 @@
 package algorithm;
 
-import crossing.ICrossingAlgorithm;
-import mutation.IMutationAlgorithm;
-import selection.ISelectionAlgorithm;
+import crossing.ICross;
+import mutation.IMutator;
+import selection.ISelector;
 
 abstract class GeneticAlgorithm<T extends IGenotype> {
     protected IGeneticAlgorithmParameters parameters;
@@ -18,8 +18,8 @@ abstract class GeneticAlgorithm<T extends IGenotype> {
         this.fitnessFunction = fitnessFunction;
     }
 
-    abstract T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm,
-                            IMutationAlgorithm<T> mutationAlgorithm);
+    abstract T runAlgorithm(ISelector<T> selectionAlgorithm, ICross<T> crossingAlgorithm,
+                            IMutator<T> mutationAlgorithm);
 
     protected T[] initPopulation() {
         T[] population = genotypeFactory.getPopulationOfGenotypes(parameters.getPopulationSize());

@@ -1,9 +1,8 @@
 package algorithmImpl.bitvectorimpl;
 
-import algorithmImpl.doublearrayimpl.DoubleArrayGenome;
-import crossing.ICrossingAlgorithm;
-import mutation.IMutationAlgorithm;
-import selection.ISelectionAlgorithm;
+import crossing.ICross;
+import mutation.IMutator;
+import selection.ISelector;
 import selection.impl.NTournamentSelectionWithRepetition;
 import util.GABitVectorUtil;
 import util.IRandomNumberGenerator;
@@ -11,9 +10,9 @@ import util.IRandomNumberGenerator;
 
 abstract public class BitVectorGA {
 
-    protected ISelectionAlgorithm<BitVectorGenome> selection;
-    protected ICrossingAlgorithm<BitVectorGenome> crossing;
-    protected IMutationAlgorithm<BitVectorGenome> mutation;
+    protected ISelector<BitVectorGenome> selection;
+    protected ICross<BitVectorGenome> crossing;
+    protected IMutator<BitVectorGenome> mutation;
 
     public BitVectorGA() {
         init();
@@ -23,7 +22,7 @@ abstract public class BitVectorGA {
 
     protected void init() {
         selection = new NTournamentSelectionWithRepetition<>(5);
-        crossing = new ICrossingAlgorithm<BitVectorGenome>() {
+        crossing = new ICross<BitVectorGenome>() {
             @Override
             public BitVectorGenome[] cross(BitVectorGenome parent1, BitVectorGenome parent2, IRandomNumberGenerator random) {
                 BitVectorGenome[] children = new BitVectorGenome[2];
@@ -41,15 +40,15 @@ abstract public class BitVectorGA {
         mutation = (BitVectorGenome toMutate, IRandomNumberGenerator random) -> new BitVectorGenome(GABitVectorUtil.mutate(toMutate.getSolution(), 0.1, random));
     }
 
-    public void setSelection(ISelectionAlgorithm<BitVectorGenome> selection) {
+    public void setSelection(ISelector<BitVectorGenome> selection) {
         this.selection = selection;
     }
 
-    public void setCrossing(ICrossingAlgorithm<BitVectorGenome> crossing) {
+    public void setCrossing(ICross<BitVectorGenome> crossing) {
         this.crossing = crossing;
     }
 
-    public void setMutation(IMutationAlgorithm<BitVectorGenome> mutation) {
+    public void setMutation(IMutator<BitVectorGenome> mutation) {
         this.mutation = mutation;
     }
 

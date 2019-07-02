@@ -4,7 +4,7 @@ import algorithm.*;
 
 public class BitVectorSteadyStateGA extends BitVectorGA{
     private SteadyStateGeneticAlgorithm<BitVectorGenome> steadyStateGeneticAlgorithm;
-    private IInserter<BitVectorGenome> selector = null;
+    private INextPopulationGenerator<BitVectorGenome> selector = null;
 
     public BitVectorSteadyStateGA(IGenotypeFactory<BitVectorGenome> genotypeFactory, IFitnessFunction<BitVectorGenome> fitnessFunction,
                                     IGeneticAlgorithmParameters parameters) {
@@ -19,7 +19,7 @@ public class BitVectorSteadyStateGA extends BitVectorGA{
         else return steadyStateGeneticAlgorithm.runAlgorithm(selection, crossing, mutation, selector);
     }
 
-    public void setSelector(IInserter<BitVectorGenome> selector) {
+    public void setSelector(INextPopulationGenerator<BitVectorGenome> selector) {
         this.selector = selector;
     }
 }

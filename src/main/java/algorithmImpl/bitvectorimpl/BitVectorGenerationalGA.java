@@ -5,7 +5,7 @@ import algorithm.*;
 
 public class BitVectorGenerationalGA extends BitVectorGA{
     private GenerationalGeneticAlgorithm<BitVectorGenome> generationalGeneticAlgorithm;
-    private IInserter<BitVectorGenome> selector = null;
+    private INextPopulationGenerator<BitVectorGenome> selector = null;
 
     public BitVectorGenerationalGA(IGenotypeFactory<BitVectorGenome> genotypeFactory, IFitnessFunction<BitVectorGenome> fitnessFunction,
                                      IGeneticAlgorithmParameters parameters) {
@@ -33,7 +33,7 @@ public class BitVectorGenerationalGA extends BitVectorGA{
         return generationalGeneticAlgorithm;
     }
 
-    public void setSelector(IInserter<BitVectorGenome> selector) {
+    public void setSelector(INextPopulationGenerator<BitVectorGenome> selector) {
         this.selector = selector;
     }
 }

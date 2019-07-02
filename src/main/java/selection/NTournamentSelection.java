@@ -5,7 +5,7 @@ import util.IRandomNumberGenerator;
 
 import java.util.List;
 
-public abstract class NTournamentSelection<T extends IGenotype> implements ISelectionAlgorithm<T> {
+public abstract class NTournamentSelection<T extends IGenotype> implements ISelector<T> {
 
     protected int numberOfSelectedGenomes;
 

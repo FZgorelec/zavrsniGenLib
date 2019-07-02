@@ -5,7 +5,7 @@ import algorithm.*;
 
 public class DoubleArrayGenerationalGA extends DoubleArrayGA {
     private GenerationalGeneticAlgorithm<DoubleArrayGenome> generationalGeneticAlgorithm;
-    private IInserter<DoubleArrayGenome> selector = null;
+    private INextPopulationGenerator<DoubleArrayGenome> selector = null;
 
     public DoubleArrayGenerationalGA(IGenotypeFactory<DoubleArrayGenome> genotypeFactory, IFitnessFunction<DoubleArrayGenome> fitnessFunction,
                                      IGeneticAlgorithmParameters parameters) {
@@ -33,7 +33,7 @@ public class DoubleArrayGenerationalGA extends DoubleArrayGA {
         return generationalGeneticAlgorithm;
     }
 
-    public void setSelector(IInserter<DoubleArrayGenome> selector) {
+    public void setSelector(INextPopulationGenerator<DoubleArrayGenome> selector) {
         this.selector = selector;
     }
 }

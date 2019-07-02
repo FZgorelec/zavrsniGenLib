@@ -1,26 +1,25 @@
 package algorithmImpl.GeneticProgramming;
 
 import algorithm.GenerationalGeneticAlgorithm;
-import algorithm.IGenotype;
-import crossing.ICrossingAlgorithm;
-import mutation.IMutationAlgorithm;
-import selection.ISelectionAlgorithm;
+import crossing.ICross;
+import mutation.IMutator;
+import selection.ISelector;
 import selection.impl.NTournamentSelectionWithRepetition;
 import util.IRandomNumberGenerator;
 
 import static algorithmImpl.GeneticProgramming.TreeUtil.depth;
 
 public class GeneticProgrammingAlgorithm {
-    private ISelectionAlgorithm<ITree> selection;
-    private ICrossingAlgorithm<ITree> crossing;
-    private IMutationAlgorithm<ITree> mutation;
+    private ISelector<ITree> selection;
+    private ICross<ITree> crossing;
+    private IMutator<ITree> mutation;
     private ITreeFactory factory;
     private GenerationalGeneticAlgorithm<ITree> geneticAlgorithm;
 
-    public GeneticProgrammingAlgorithm(GenerationalGeneticAlgorithm<ITree> geneticAlgorithm, ITreeFactory treeFactory, int maxTreeDepth, int maxNumberOfNodes) {
+    public GeneticProgrammingAlgorithm(GenerationalGeneticAlgorithm<ITree> geneticAlgorithm, ITreeFactory treeFactory, int maxTreeDepth, int maxNumberOfNodes, int tournamentSize) {
         this.factory = treeFactory;
         this.geneticAlgorithm = geneticAlgorithm;
-        selection = new NTournamentSelectionWithRepetition(11);
+        selection = new NTournamentSelectionWithRepetition(tournamentSize);//11
         mutation = (ITree genome, IRandomNumberGenerator random) -> {
             ITree treeCopy = genome.copyTree();
             INode pickedNode = pickRandomNode(random.nextInt(1, treeCopy.getHead().getChildrenBelow() + 1), 1, treeCopy.getHead());
@@ -36,7 +35,7 @@ public class GeneticProgrammingAlgorithm {
             }
             return treeCopy;
         };
-        crossing = new ICrossingAlgorithm<ITree>() {
+        crossing = new ICross<ITree>() {
             @Override
             public ITree[] cross(ITree parent1, ITree parent2, IRandomNumberGenerator random) {
                 ITree[] children = new ITree[]{parent1.copyTree()};

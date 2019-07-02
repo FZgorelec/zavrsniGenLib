@@ -1,7 +1,8 @@
 package selection;
 
+import algorithm.IGenotype;
 import util.IRandomNumberGenerator;
 
-public interface ISelectionAlgorithm<T> {
+public interface ISelector<T extends IGenotype> {
     T select(T[] population, IRandomNumberGenerator random);
 }

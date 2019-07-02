@@ -1,13 +1,12 @@
 package algorithm;
 
-import crossing.ICrossingAlgorithm;
-import mutation.IMutationAlgorithm;
-import selection.ISelectionAlgorithm;
+import crossing.ICross;
+import mutation.IMutator;
+import selection.ISelector;
 import util.IRandomNumberGenerator;
 import util.RandomNumberGenerator;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 public class SteadyStateGeneticAlgorithm<T extends IGenotype> extends GeneticAlgorithm<T> {
 
@@ -18,12 +17,12 @@ public class SteadyStateGeneticAlgorithm<T extends IGenotype> extends GeneticAlg
     }
 
     @Override
-    public T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm, IMutationAlgorithm<T> mutationAlgorithm) {
+    public T runAlgorithm(ISelector<T> selectionAlgorithm, ICross<T> crossingAlgorithm, IMutator<T> mutationAlgorithm) {
         return runAlgorithm(selectionAlgorithm, crossingAlgorithm, mutationAlgorithm, null);
     }
 
 
-    public T runAlgorithm(ISelectionAlgorithm<T> selectionAlgorithm, ICrossingAlgorithm<T> crossingAlgorithm, IMutationAlgorithm<T> mutationAlgorithm, IInserter<T> inserter) {
+    public T runAlgorithm(ISelector<T> selectionAlgorithm, ICross<T> crossingAlgorithm, IMutator<T> mutationAlgorithm, INextPopulationGenerator<T> inserter) {
 
         double satisfactoryFitness = parameters.getSatisfactoryFitness();
         T[] population = initPopulation();
@@ -41,7 +40,7 @@ public class SteadyStateGeneticAlgorithm<T extends IGenotype> extends GeneticAlg
                 children[j].setFitness(fitnessFunction.calculateFitness(children[j]));
             }
             if(inserter==null)population[findWorstIndex(population)] = findBestInPopulation(children);
-            else inserter.insert(population, Arrays.asList(children), randomNumberGenerator);
+            else inserter.nextPopulation(population, Arrays.asList(children), randomNumberGenerator);
         }
 
         return findBestInPopulation(population);

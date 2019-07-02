@@ -20,7 +20,7 @@ public class GPtest {
                 (ITree genome) -> {
                     return numberOfMoveNodes(genome.getHead());
                 }, new GeneticAlgorithmParameters(30, 1000, 100));
-        GeneticProgrammingAlgorithm gpa=new GeneticProgrammingAlgorithm(ga,fact,6,200 );
+        GeneticProgrammingAlgorithm gpa=new GeneticProgrammingAlgorithm(ga,fact,6,200,13 );
         ITree tree=gpa.run(false);
         System.out.println(tree.getFitness());
         printNodes(tree.getHead());
@@ -29,8 +29,8 @@ public class GPtest {
 
     private static void test2(){
         long startTime = System.currentTimeMillis();
-        String[][] map=new String[][]{{OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(), OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
-                {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+        String[][] map=new String[][]{{OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(), OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
+                {OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
                 {WALL.toString(),WALL.toString(),WALL.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
                 {OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
                 {FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),FOOD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),WALL.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString(),OPENFIELD.toString()},
@@ -47,13 +47,14 @@ public class GPtest {
                         return evaluator.evaluate(genome);
                 }, new GeneticAlgorithmParameters(141, 5000, 14.01),0);
         ga.setThreadFactory(new EvaluatorThreadFactory(map,250));
-        GeneticProgrammingAlgorithm gpa=new GeneticProgrammingAlgorithm(ga,fact,7,200 );
+        GeneticProgrammingAlgorithm gpa=new GeneticProgrammingAlgorithm(ga,fact,7,200,13 );
         ITree tree=gpa.run(true);
         long endTime = System.currentTimeMillis();
         long timeElapsed = endTime - startTime;
         System.out.println("Execution time in milliseconds: " + timeElapsed);
         MovementDecoder decoder=new MovementDecoder(map, 250);
         List<String> movements= decoder.treeToMovementList(tree, 250);
+        List<String> c=decoder.removeCycles(movements);
         System.out.println(tree.getFitness());
     }
     private static double numberOfMoveNodes(INode node){
@@ -72,4 +73,5 @@ public class GPtest {
         }
 
     }
+
 }
